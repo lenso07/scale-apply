@@ -27,11 +27,11 @@ body{
 /* Logo watermark: the JPG is black lines on white; invert + screen turns it into white lines on the black page */
 .mark-bg{position:fixed;z-index:0;pointer-events:none;
   width:min(115vh,140vw);aspect-ratio:1;right:-30vw;top:50%;transform:translateY(-50%) rotate(-8deg);
-  background:url("logo.jpg") center/contain no-repeat;filter:invert(1);mix-blend-mode:screen;opacity:.07}
-@media (min-width:900px){.mark-bg{right:-12vw;opacity:.09}}
+  background:url("logo-white.png") center/contain no-repeat;opacity:.1}
+@media (min-width:900px){.mark-bg{right:-12vw;opacity:.12}}
 .shell{position:relative;z-index:1}
 .brand{display:flex;align-items:center;gap:10px}
-.brand img{width:30px;height:30px;filter:invert(1);mix-blend-mode:screen}
+.brand img{height:28px;width:auto;display:block}
 [hidden]{display:none!important}
 .shell{min-height:100%;display:flex;flex-direction:column;
   padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
@@ -118,7 +118,7 @@ input[type=date]{min-height:48px}
 <div class="mark-bg" aria-hidden="true"></div>
 <div class="shell">
   <header>
-    <div class="brand"><img src="logo.jpg" alt="">Scale<span>+</span> Agency</div>
+    <div class="brand"><img src="logo-white.png" alt="">Scale<span>+</span> Agency</div>
     <div class="count" id="count"></div>
   </header>
   <div class="rail" aria-hidden="true"><i id="bar"></i></div>
