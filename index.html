@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Apply · Scale+ Agency</title>
-<meta name="description" content="Apply to join Scale+ Agency. Takes about 2 minutes.">
+<title>Onboarding · Scale+ Agency</title>
+<meta name="description" content="Scale+ Agency creator onboarding.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap">
@@ -39,7 +39,7 @@ body{
 header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px;max-width:640px;width:100%;margin:0 auto}
 .brand{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.02em}
 .brand span{color:var(--muted)}
-.count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.count{white-space:nowrap;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
 .rail{max-width:640px;width:100%;margin:0 auto;height:3px;background:var(--line);border-radius:3px;overflow:hidden}
 .rail i{display:block;height:100%;width:0;background:var(--accent);transition:width .45s cubic-bezier(.2,.8,.2,1)}
 main{flex:1;display:flex;align-items:center;max-width:640px;width:100%;margin:0 auto;padding-block:32px 24px}
@@ -55,8 +55,8 @@ h2{font-size:clamp(26px,5.5vw,38px)}
 .hint{color:var(--muted);margin:0 0 28px;max-width:52ch}
 .fields{display:grid;gap:14px}
 label.f{display:grid;gap:6px;font-size:13px;color:var(--muted);font-weight:600}
-input[type=text],input[type=tel],textarea{
-  width:100%;background:transparent;color:var(--fg);font:500 22px/1.3 var(--body);
+input[type=text],input[type=tel],input[type=email],input[type=date],textarea{
+  width:100%;background:transparent;color:var(--fg);font:500 19px/1.3 var(--body);
   border:0;border-bottom:2px solid var(--line);padding:10px 2px;outline:none;border-radius:0;transition:border-color .2s}
 textarea{font-size:18px;resize:vertical;min-height:110px;border:2px solid var(--line);border-radius:12px;padding:14px}
 input::placeholder,textarea::placeholder{color:var(--faint)}
@@ -100,6 +100,18 @@ footer{max-width:640px;width:100%;margin:0 auto;padding-block:16px 24px;color:va
 .review dt{color:var(--muted)}
 .review dd{margin:0;word-break:break-word}
 .review button{all:unset;color:var(--accent);cursor:pointer;font-size:13px;font-weight:600}
+.fields{gap:22px}
+.req{color:var(--faint);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{appearance:none;border:1.5px solid var(--line);background:var(--bg-2);color:var(--fg);border-radius:999px;
+  padding:10px 16px;font:600 15px var(--body);cursor:pointer;transition:border-color .15s,background .15s}
+.chip:hover{border-color:#555}
+.chip[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.choices.two .choice{padding:13px 16px;font-size:16px}
+.consent{display:flex;gap:14px;align-items:flex-start;padding:18px;border:1.5px solid var(--line);border-radius:14px;background:var(--bg-2);cursor:pointer;font-weight:600}
+.consent input{width:22px;height:22px;accent-color:var(--accent);flex:none;margin-top:1px}
+.ftext{font-size:15px;color:var(--muted);font-weight:500;margin:0}
+input[type=date]{min-height:48px}
 </style>
 </head>
 <body>
@@ -111,200 +123,193 @@ footer{max-width:640px;width:100%;margin:0 auto;padding-block:16px 24px;color:va
   </header>
   <div class="rail" aria-hidden="true"><i id="bar"></i></div>
   <main><form id="form" novalidate autocomplete="on" style="width:100%"></form></main>
-  <footer>Your answers are private and only seen by the Scale+ team. You must be 18 or older to apply.</footer>
+  <footer>Your answers are private and only seen by the Scale+ team. Your progress is saved on this device, so you can come back and finish later.</footer>
 </div>
 
 <script>
-/* ---- Google Form backend: answers land in the existing Scale+ Google Form ---- */
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc6bJCxsBbEnAIXRuDs8QTVk2Basq4A95A1kqv0YbnRtlsnYw/formResponse";
-const ENTRY = {
-  name:"entry.241745866", socials:"entry.1797762964", tiktoks:"entry.1884275040",
-  income:"entry.1104197530", location:"entry.1759413580", nudity:"entry.373275865",
-  phone:"entry.250680806", languages:"entry.134616433", extra:"entry.1090339285"
-};
+/* ---- Google Form backend: answers land in the existing "Scale+ Onboarding Form" ---- */
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdvgDiZ6uW1hOfQsf2RNdou-PpHgsAzWPyfm3WHxkQf3gHBEA/formResponse";
+const STORE = "scaleplus-onboarding";
+const COMMIT = "I understand and I am committed to this process";
+const CONTENT = ["Bikini","Lingerie","Feet","Ass","Voice Notes","Boobs","Pussy pics","Full nude pics/videos","Video dick rates",
+  "Girl-Girl Content","Boy-Girl Content","Masturbation Content","Anal","JOI Videos (Jerk-off instructions)","Twerk videos","Dildo Content"];
 
-const data = {};
+/* Each field: e = Google entry id, t = type, l = label, r = required */
 const steps = [
-  { id:"welcome", render:()=>`
-      <p class="eyebrow">Creator application</p>
-      <h1>Let's grow your page together.</h1>
-      <p class="hint">Tell us a bit about you. It takes about 2 minutes, and we reply to every application within 48 hours.</p>
-      <ul class="perks">
-        <li>Done-for-you management, chatting and growth</li>
-        <li>Strategy built for the US market</li>
-        <li>You keep full control of your content</li>
-      </ul>
-      <div class="actions"><button class="btn" type="submit">Start application →</button><span class="meta">9 short questions</span></div>` },
-
-  { id:"name", q:true, render:()=>`
-      <h2>First, what's your name?</h2>
-      <p class="hint">Your full name, as you'd like us to call you.</p>
-      <div class="fields">
-        <label class="f">First name<input type="text" id="first" autocomplete="given-name" placeholder="Jessica" value="${esc(data.first)}"></label>
-        <label class="f">Last name<input type="text" id="last" autocomplete="family-name" placeholder="Miller" value="${esc(data.last)}"></label>
-      </div>`,
-    save:()=>{ data.first=val("first"); data.last=val("last");
-      if(!data.first||!data.last) return "Please enter your first and last name."; } },
-
-  { id:"socials", q:true, render:()=>`
-      <h2>Nice to meet you, ${esc(data.first)}. Where can we find you?</h2>
-      <p class="hint">Your usernames, so we can look at your page before we talk.</p>
-      <div class="fields">
-        <label class="f">Instagram<div class="prefix"><b>@</b><input type="text" id="ig" autocapitalize="off" autocomplete="off" placeholder="yourname" value="${esc(data.ig)}"></div></label>
-        <label class="f">TikTok<div class="prefix"><b>@</b><input type="text" id="tt" autocapitalize="off" autocomplete="off" placeholder="yourname" value="${esc(data.tt)}"></div></label>
-      </div>`,
-    save:()=>{ data.ig=val("ig").replace(/^@/,""); data.tt=val("tt").replace(/^@/,"");
-      if(!data.ig&&!data.tt) return "Add at least one username."; } },
-
-  { id:"tiktoks", q:true, choice:["Yes","No"], key:"tiktoks", render:()=>`
-      <h2>Are you willing to post several TikToks a day?</h2>
-      <p class="hint">Consistency is how we grow your audience fast.</p>
-      ${choices("tiktoks",["Yes","No"],true)}` },
-
-  { id:"income", q:true, key:"income", render:()=>`
-      <h2>How much are you making per month right now?</h2>
-      <p class="hint">From your content, all platforms combined. Starting from zero is totally fine.</p>
-      ${choices("income",["Just starting ($0)","Under $1,000","$1,000 – $5,000","$5,000 – $10,000","$10,000+"])}` },
-
-  { id:"location", q:true, render:()=>`
-      <h2>Where are you based?</h2>
-      <p class="hint">City and country.</p>
-      <div class="fields"><input type="text" id="loc" autocomplete="address-level2" placeholder="Miami, USA" value="${esc(data.location)}" aria-label="City and country"></div>`,
-    save:()=>{ data.location=val("loc"); if(!data.location) return "Tell us where you're based."; } },
-
-  { id:"nudity", q:true, key:"nudity", render:()=>`
-      <h2>Are you comfortable creating content that involves nudity?</h2>
-      <p class="hint">There's no wrong answer. It just helps us pick the right strategy for you.</p>
-      ${choices("nudity",["Yes","No"],true)}
-      <label class="check"><input type="checkbox" id="adult" ${data.adult?"checked":""}> I confirm I am 18 years old or older.</label>`,
-    save:()=>{ data.adult=document.getElementById("adult").checked;
-      if(!data.nudity) return "Please pick an answer.";
-      if(!data.adult) return "You must be 18 or older to apply."; } },
-
-  { id:"phone", q:true, render:()=>`
-      <h2>What's your phone number?</h2>
-      <p class="hint">With country code. We'll text you on WhatsApp or iMessage, never spam.</p>
-      <div class="fields"><input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="+1 305 555 0123" value="${esc(data.phone)}" aria-label="Phone number"></div>`,
-    save:()=>{ data.phone=val("phone");
-      if(data.phone.replace(/\D/g,"").length<7) return "Please enter a valid phone number, with country code."; } },
-
-  { id:"languages", q:true, render:()=>`
-      <h2>Which languages do you speak?</h2>
-      <p class="hint">List them all, for example: English, Spanish.</p>
-      <div class="fields"><input type="text" id="lang" placeholder="English, Spanish" value="${esc(data.languages)}" aria-label="Languages"></div>`,
-    save:()=>{ data.languages=val("lang"); if(!data.languages) return "Tell us at least one language."; } },
-
-  { id:"extra", q:true, render:()=>`
-      <h2>Anything else you'd like us to know?</h2>
-      <p class="hint">Your niche, your goals, what you love creating. Optional.</p>
-      <textarea id="extra" placeholder="I post fitness and lifestyle content, and I want to...">${esc(data.extra)}</textarea>`,
-    save:()=>{ data.extra=val("extra"); } },
-
-  { id:"review", render:()=>`
-      <p class="eyebrow">Almost done</p>
-      <h2>Check your answers</h2>
-      <p class="hint">Tap edit to change anything.</p>
-      <dl class="review">
-        ${row("Name",data.first+" "+data.last,1)}
-        ${row("Instagram / TikTok",socials(),2)}
-        ${row("Several TikToks a day",data.tiktoks,3)}
-        ${row("Monthly earnings",data.income,4)}
-        ${row("Based in",data.location,5)}
-        ${row("Comfortable with nudity",data.nudity,6)}
-        ${row("Phone",data.phone,7)}
-        ${row("Languages",data.languages,8)}
-        ${row("About you",data.extra||"—",9)}
-      </dl>`,
-    submitLabel:"Send my application" },
-
-  { id:"done", render:()=>`
-      <p class="eyebrow">Application received</p>
-      <h1>Thank you, ${esc(data.first)}.</h1>
-      <p class="hint">Our team will review your profile and reach out within 48 hours on Instagram or by text. Keep an eye on your DMs.</p>` }
+  { id:"welcome" },
+  { title:"Let's start with you", hint:"The basics, so we can set up your account.", fields:[
+    {e:623545884, t:"text", l:"Full legal name", p:"Jessica Ann Miller", r:1, ac:"name"},
+    {e:242793241, t:"text", l:"Online name (if different from your legal name)", p:"Jess", r:1},
+    {e:2061273468, t:"email", l:"E-mail address", p:"you@email.com", r:1, ac:"email"},
+    {e:880041910, t:"tel", l:"Phone number, with country code", p:"+1 305 555 0123", r:1, ac:"tel"} ]},
+  { title:"Your socials", hint:"Your usernames on each platform. Leave empty the ones you don't use.", fields:[
+    {k:"ig", t:"handle", l:"Instagram"}, {k:"tt", t:"handle", l:"TikTok"}, {k:"tw", t:"handle", l:"Twitter / X"} ]},
+  { title:"Tell us about yourself", hint:"The more details, the more convincing the chatting on your account will be.", fields:[
+    {e:64789520, t:"long", l:"Your interests, hobbies, personality, the music you listen to, what you like to eat, your favorite singer, and some background", p:"I'm a Miami girl, I love the beach, R&B, sushi...", r:1} ]},
+  { title:"How should we talk as you?", hint:"Describe your attitude, so our writers chat exactly like you would.", fields:[
+    {e:1481455894, t:"long", l:"Your attitude and the way you talk", p:"Example: bubbly, always teasing and joking around, but can get really sexual and very descriptive", r:1} ]},
+  { title:"A few personal details", fields:[
+    {e:273796012, t:"date", l:"Birthday", r:1},
+    {e:327921896, t:"text", l:"Height", p:"5'6\" / 168 cm"},
+    {e:2098313496, t:"text", l:"Zodiac sign", p:"Leo"},
+    {e:2031284993, t:"text", l:"Sexual orientation", p:"Straight, bi...", r:1} ]},
+  { title:"Where you're from", fields:[
+    {e:706606655, t:"text", l:"Where are you based now?", p:"Miami, USA", r:1},
+    {e:473913278, t:"text", l:"Where are you from originally?", p:"Bogotá, Colombia", r:1},
+    {e:967140255, t:"text", l:"Languages spoken", p:"English, Spanish", r:1},
+    {e:1534987497, t:"text", l:"Ethnicity", p:"Latina"} ]},
+  { title:"Your look", fields:[
+    {e:1875957748, t:"text", l:"Bra size", p:"34C", r:1},
+    {e:727737457, t:"text", l:"Shoe size", p:"US 7"},
+    {e:400978976, t:"long", l:"Which part of your body do you find the sexiest?", r:1},
+    {e:1728033070, t:"long", l:"How would you describe your physical appearance?"} ]},
+  { title:"Your everyday life", fields:[
+    {e:789545, t:"text", l:"Favorite color", p:"Pink", r:1},
+    {e:1039791134, t:"text", l:"Did you go to college? What major?", p:"Yes, Psychology"},
+    {e:190339400, t:"text", l:"Do you have kids? If yes, how many?", p:"No", r:1},
+    {e:1290894391, t:"text", l:"Do you have pets? Name, kind, age?", p:"Luna, French bulldog, 3"} ]},
+  { title:"Your activities", fields:[
+    {e:2007998572, t:"text", l:"Do you play sports?", p:"Gym, pilates", r:1},
+    {e:733508957, t:"text", l:"What places have you visited?", p:"Cancún, Paris, NYC", r:1},
+    {e:1171401098, t:"text", l:"What is your work other than OnlyFans?", p:"Bartender", r:1} ]},
+  { title:"What content are you comfortable sharing?", hint:"Pick everything you're OK with. You can change this anytime with your manager.", fields:[
+    {e:1217121594, t:"multi", opts:CONTENT, r:1} ]},
+  { title:"Working with fans", fields:[
+    {e:331608123, t:"yn", l:"Do you accept video calls from OF fans?", r:1},
+    {e:608522380, t:"yn", l:"Are you willing to make custom requests?", r:1},
+    {e:1956987537, t:"yn", l:"Are you willing to go LIVE on OF?"},
+    {e:2106965277, t:"text", l:"Anyone featured in your OF content? Add their @ so we can tag them", p:"@name, or \"No one\"", r:1} ]},
+  { title:"Last step", fields:[
+    {e:2047260324, t:"long", l:"Anything else you want to mention that we haven't asked?"},
+    {e:1148321390, t:"consent", l:"I understand that making a high amount of money requires great commitment from me. Scale+ expects regular content and regular posting on TikTok and Instagram.", r:1} ],
+    submitLabel:"Send my answers" },
+  { id:"done" }
 ];
 
-const QUESTIONS = steps.filter(s=>s.q).length;
+const data = {};
+const FIELD_STEPS = steps.filter(s=>s.fields).length;
 let i = 0, dir = 1;
 const form = document.getElementById("form");
 
-function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function val(id){return document.getElementById(id).value.trim()}
-function socials(){return [data.ig&&"IG @"+data.ig,data.tt&&"TikTok @"+data.tt].filter(Boolean).join(" · ")}
-function row(k,v,step){return `<div><dt>${k}</dt><dd>${esc(v)} <button type="button" data-goto="${step}">Edit</button></dd></div>`}
-function choices(key,opts,two){
-  return `<div class="choices${two?" two":""}" role="group">${opts.map((o,n)=>
-    `<button type="button" class="choice" data-key="${key}" data-val="${esc(o)}" aria-pressed="${data[key]===o}"><kbd>${String.fromCharCode(65+n)}</kbd>${esc(o)}</button>`).join("")}</div>`;
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const keyOf = f => f.k || "e"+f.e;
+const reqMark = f => f.r ? "" : ` <span class="req">(optional)</span>`;
+function socials(){return [data.ig&&"IG @"+data.ig, data.tt&&"TikTok @"+data.tt, data.tw&&"Twitter @"+data.tw].filter(Boolean).join(" · ")}
+function ageFrom(iso){ if(!iso) return null; const b=new Date(iso+"T00:00:00"), n=new Date();
+  let a=n.getFullYear()-b.getFullYear(); if(n.getMonth()<b.getMonth()||(n.getMonth()===b.getMonth()&&n.getDate()<b.getDate())) a--; return a; }
+function prettyDate(iso){ return new Date(iso+"T00:00:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"}); }
+
+function fieldHTML(f){
+  const k = keyOf(f), v = data[k];
+  if(f.t==="handle") return `<label class="f">${f.l}<div class="prefix"><b>@</b><input type="text" data-k="${k}" autocapitalize="off" autocomplete="off" placeholder="yourname" value="${esc(v)}"></div></label>`;
+  if(f.t==="long") return `<label class="f">${f.l}${reqMark(f)}<textarea data-k="${k}" placeholder="${esc(f.p||"")}">${esc(v)}</textarea></label>`;
+  if(f.t==="yn") return `<div class="f" style="display:grid;gap:10px"><p class="ftext">${f.l}${reqMark(f)}</p><div class="choices two">${["Yes","No"].map((o,n)=>
+      `<button type="button" class="choice" data-k="${k}" data-val="${o}" aria-pressed="${v===o}"><kbd>${"AB"[n]}</kbd>${o}</button>`).join("")}</div></div>`;
+  if(f.t==="multi") return `<div class="chips" role="group" aria-label="Content types">${f.opts.map(o=>
+      `<button type="button" class="chip" data-multi="${k}" data-val="${esc(o)}" aria-pressed="${(v||[]).includes(o)}">${esc(o)}</button>`).join("")}</div>`;
+  if(f.t==="consent") return `<label class="consent"><input type="checkbox" data-k="${k}" ${v?"checked":""}><span>${f.l}</span></label>`;
+  const type = f.t==="date" ? "date" : f.t;
+  const extra = f.t==="tel" ? ` inputmode="tel"` : "";
+  return `<label class="f">${f.l}${reqMark(f)}<input type="${type}" data-k="${k}"${extra} autocomplete="${f.ac||"off"}" placeholder="${esc(f.p||"")}" value="${esc(v)}"></label>`;
 }
 
 function render(){
   const s = steps[i];
-  const qIndex = steps.slice(0,i+1).filter(x=>x.q).length;
-  document.getElementById("count").textContent = s.q ? `${qIndex} / ${QUESTIONS}` : "";
-  document.getElementById("bar").style.width = (s.id==="done"||s.id==="review" ? 100 : (qIndex-(s.q?1:0))/QUESTIONS*100) + "%";
-  const isLast = s.id==="done", isFirst = i===0;
-  form.innerHTML = `<div class="step${dir<0?" back":""}">${s.render()}
-    <p class="err" id="err" role="alert"></p>
-    ${isLast||isFirst ? "" : `<div class="actions">
-      <button class="btn" type="submit" id="next">${s.submitLabel||"Next →"}</button>
-      <button class="ghost" type="button" id="back">← Back</button>
-      <span class="enter">press <b>Enter ↵</b></span></div>`}
-  </div>`;
-  if(isFirst) form.querySelector(".err").remove();
+  const n = steps.slice(0,i+1).filter(x=>x.fields).length;
+  document.getElementById("count").textContent = s.fields ? `${n} / ${FIELD_STEPS}` : "";
+  document.getElementById("bar").style.width = (s.id==="done" ? 100 : s.fields ? (n-1)/FIELD_STEPS*100 : 0) + "%";
+  let body;
+  if(s.id==="welcome") body = `
+      <p class="eyebrow">Creator onboarding</p>
+      <h1>Welcome to Scale+.</h1>
+      <p class="hint">We're so pleased to have you with us. Please fill this out in full and with detail: it's how our team learns to run your account exactly like you would.</p>
+      <ul class="perks"><li>About 10 minutes, ${FIELD_STEPS} short steps</li><li>Your progress is saved if you leave</li><li>Only the Scale+ team sees your answers</li></ul>
+      <div class="actions"><button class="btn" type="submit">Let's start →</button></div>`;
+  else if(s.id==="done") body = `
+      <p class="eyebrow">All done</p>
+      <h1>Thank you${data.e242793241?", "+esc(data.e242793241):""}.</h1>
+      <p class="hint">Your manager now has everything needed to set up your account. We'll reach out very soon with next steps.</p>`;
+  else body = `
+      <h2>${s.title}</h2>${s.hint?`<p class="hint">${s.hint}</p>`:`<div style="height:16px"></div>`}
+      <div class="fields">${s.fields.map(fieldHTML).join("")}</div>
+      <p class="err" id="err" role="alert"></p>
+      <div class="actions">
+        <button class="btn" type="submit" id="next">${s.submitLabel||"Next →"}</button>
+        <button class="ghost" type="button" id="back">← Back</button>
+        <span class="enter">press <b>Enter ↵</b></span></div>`;
+  form.innerHTML = `<div class="step${dir<0?" back":""}">${body}</div>`;
+  window.scrollTo(0,0);
   const first = form.querySelector("input:not([type=checkbox]),textarea");
-  if(first && matchMedia("(hover:hover)").matches) first.focus();
-  try{ localStorage.setItem("scaleplus-apply", JSON.stringify({i,data})) }catch(e){}
+  if(first && matchMedia("(hover:hover)").matches) first.focus({preventScroll:true});
+  persist();
+}
+function persist(){ try{ localStorage.setItem(STORE, JSON.stringify({i,data})) }catch(e){} }
+
+function collect(){
+  form.querySelectorAll("[data-k]").forEach(el=>{
+    if(el.classList.contains("choice")) return;
+    data[el.dataset.k] = el.type==="checkbox" ? el.checked : el.value.trim().replace(el.closest(".prefix")?/^@/:/^$/,"");
+  });
+}
+function validate(s){
+  for(const f of s.fields){
+    const v = data[keyOf(f)];
+    if(f.t==="handle") continue;
+    if(f.r && (v===undefined || v==="" || v===false || (Array.isArray(v)&&!v.length)))
+      return f.t==="multi" ? "Pick at least one type of content." : f.t==="consent" ? "Please tick the box to confirm your commitment." : `Please fill in: ${f.l.split("?")[0].split(",")[0]}.`;
+    if(f.t==="email" && v && !/^\S+@\S+\.\S+$/.test(v)) return "Please enter a valid e-mail address.";
+    if(f.t==="tel" && v && v.replace(/\D/g,"").length<7) return "Please enter a valid phone number, with country code.";
+    if(f.t==="date" && v){ const a=ageFrom(v); if(a===null||a<18) return "You must be 18 or older."; if(a>100) return "Please check your birthday."; }
+  }
+  if(s.fields.some(f=>f.t==="handle") && !socials()) return "Add at least one username.";
 }
 
-async function next(){
+function next(){
   const s = steps[i];
-  const err = s.save ? s.save() : (s.key && !data[s.key] ? "Please pick an answer." : null);
+  collect();
+  const err = validate(s);
   if(err){ document.getElementById("err").textContent = err; return; }
-  if(s.id==="review"){ return submit(); }
+  if(s.submitLabel) return submit();
   dir = 1; i++; render();
 }
 
 async function submit(){
   const btn = document.getElementById("next");
   btn.disabled = true; btn.textContent = "Sending…";
-  const body = new URLSearchParams({
-    [ENTRY.name]: `${data.first} ${data.last}`,
-    [ENTRY.socials]: socials(),
-    [ENTRY.tiktoks]: data.tiktoks,
-    [ENTRY.income]: data.income,
-    [ENTRY.location]: data.location,
-    [ENTRY.nudity]: data.nudity,
-    [ENTRY.phone]: data.phone,
-    [ENTRY.languages]: data.languages,
-    [ENTRY.extra]: data.extra || ""
-  });
+  const body = new URLSearchParams();
+  for(const s of steps) for(const f of (s.fields||[])){
+    if(!f.e) continue;
+    const v = data[keyOf(f)];
+    if(f.t==="multi") (v||[]).forEach(o=>body.append("entry."+f.e, o));
+    else if(f.t==="consent"){ if(v) body.append("entry."+f.e, COMMIT); }
+    else if(f.t==="date") body.append("entry."+f.e, v ? prettyDate(v) : "");
+    else if(v) body.append("entry."+f.e, v);
+  }
+  body.append("entry.969509483", socials());           // IG, TikTok, Twitter usernames
+  body.append("entry.45020611", String(ageFrom(data.e273796012))); // Age, worked out from the birthday
   try{
     await fetch(FORM_URL, {method:"POST", mode:"no-cors", body});
-    try{ localStorage.removeItem("scaleplus-apply") }catch(e){}
-    dir = 1; i = steps.length-1; render();
+    try{ localStorage.removeItem(STORE) }catch(e){}
+    dir = 1; i = steps.length-1; render(); try{ localStorage.removeItem(STORE) }catch(e){}
   }catch(e){
-    btn.disabled = false; btn.textContent = "Send my application";
-    document.getElementById("err").textContent = "We couldn't send your application. Check your connection and try again.";
+    btn.disabled = false; btn.textContent = "Send my answers";
+    document.getElementById("err").textContent = "We couldn't send your answers. Check your connection and try again. Nothing is lost.";
   }
 }
 
 form.addEventListener("submit", e=>{ e.preventDefault(); if(i===0){dir=1;i=1;render()} else next(); });
 form.addEventListener("click", e=>{
   const c = e.target.closest(".choice");
-  if(c){ data[c.dataset.key]=c.dataset.val;
-    form.querySelectorAll(`.choice[data-key="${c.dataset.key}"]`).forEach(b=>b.setAttribute("aria-pressed", b===c));
-    const s = steps[i];
-    if(!s.save) setTimeout(next, 220); // auto-advance on single-choice steps
-    return; }
-  if(e.target.id==="back"){ dir=-1; i=Math.max(0,i-1); render(); }
-  const g = e.target.dataset.goto; if(g){ dir=-1; i=+g; render(); }
+  if(c){ data[c.dataset.k]=c.dataset.val;
+    form.querySelectorAll(`.choice[data-k="${c.dataset.k}"]`).forEach(b=>b.setAttribute("aria-pressed", b===c)); persist(); return; }
+  const m = e.target.closest(".chip");
+  if(m){ const k=m.dataset.multi, arr=data[k]||(data[k]=[]), v=m.dataset.val, on=!arr.includes(v);
+    on ? arr.push(v) : arr.splice(arr.indexOf(v),1); m.setAttribute("aria-pressed", on); persist(); return; }
+  if(e.target.id==="back"){ collect(); dir=-1; i=Math.max(0,i-1); render(); }
 });
-document.addEventListener("keydown", e=>{
-  if(e.target.tagName==="TEXTAREA"||e.target.tagName==="INPUT") return;
-  const opts = form.querySelectorAll(".choice"); const n = e.key.toUpperCase().charCodeAt(0)-65;
-  if(e.key.length===1 && opts[n]) opts[n].click();
-});
+form.addEventListener("input", ()=>{ collect(); persist(); });
 
-try{ const saved = JSON.parse(localStorage.getItem("scaleplus-apply")); if(saved && saved.i < steps.length-1){ Object.assign(data, saved.data); i = saved.i; } }catch(e){}
+try{ const saved = JSON.parse(localStorage.getItem(STORE)); if(saved && saved.i < steps.length-1){ Object.assign(data, saved.data); i = saved.i; } }catch(e){}
 render();
 </script>
 </body>
