@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Apply · Scale+ Agency</title>
+<meta name="description" content="Apply to join Scale+ Agency. Takes about 2 minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one question per screen, centered column, progress rail on top. Monochrome, matched to the black-and-white S logo. */
+:root{
+  --bg:#0A0A0A; --bg-2:#141414; --line:#2A2A2A; --fg:#FFFFFF; --muted:#8F8F8F; --faint:#4D4D4D;
+  --accent:#FFFFFF; --accent-ink:#0A0A0A; --pressed:rgba(255,255,255,.07); --error:#FF7A7A;
+  --display:"Syne",ui-sans-serif,system-ui,sans-serif;
+  --body:"Manrope",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg);
+  color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+/* Logo watermark: the JPG is black lines on white; invert + screen turns it into white lines on the black page */
+.mark-bg{position:fixed;z-index:0;pointer-events:none;
+  width:min(115vh,140vw);aspect-ratio:1;right:-30vw;top:50%;transform:translateY(-50%) rotate(-8deg);
+  background:url("logo.jpg") center/contain no-repeat;filter:invert(1);mix-blend-mode:screen;opacity:.07}
+@media (min-width:900px){.mark-bg{right:-12vw;opacity:.09}}
+.shell{position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:30px;height:30px;filter:invert(1);mix-blend-mode:screen}
+[hidden]{display:none!important}
+.shell{min-height:100%;display:flex;flex-direction:column;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:20px;max-width:640px;width:100%;margin:0 auto}
+.brand{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.02em}
+.brand span{color:var(--muted)}
+.count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.rail{max-width:640px;width:100%;margin:0 auto;height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.rail i{display:block;height:100%;width:0;background:var(--accent);transition:width .45s cubic-bezier(.2,.8,.2,1)}
+main{flex:1;display:flex;align-items:center;max-width:640px;width:100%;margin:0 auto;padding-block:32px 24px}
+.step{width:100%;animation:in .45s cubic-bezier(.2,.8,.2,1) both}
+.step.back{animation-name:inBack}
+@keyframes in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes inBack{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.step{animation:none}.rail i{transition:none}}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+h1,h2{font-family:var(--display);font-weight:700;letter-spacing:-.025em;line-height:1.08;margin:0 0 12px;text-wrap:balance}
+h1{font-size:clamp(36px,8vw,56px)}
+h2{font-size:clamp(26px,5.5vw,38px)}
+.hint{color:var(--muted);margin:0 0 28px;max-width:52ch}
+.fields{display:grid;gap:14px}
+label.f{display:grid;gap:6px;font-size:13px;color:var(--muted);font-weight:600}
+input[type=text],input[type=tel],textarea{
+  width:100%;background:transparent;color:var(--fg);font:500 22px/1.3 var(--body);
+  border:0;border-bottom:2px solid var(--line);padding:10px 2px;outline:none;border-radius:0;transition:border-color .2s}
+textarea{font-size:18px;resize:vertical;min-height:110px;border:2px solid var(--line);border-radius:12px;padding:14px}
+input::placeholder,textarea::placeholder{color:var(--faint)}
+input:focus,textarea:focus{border-color:var(--accent)}
+.prefix{display:flex;align-items:center;gap:6px;border-bottom:2px solid var(--line);transition:border-color .2s}
+.prefix:focus-within{border-color:var(--accent)}
+.prefix b{font:600 22px var(--body);color:var(--muted)}
+.prefix input{border:0}
+.choices{display:grid;gap:10px}
+.choices.two{grid-template-columns:1fr 1fr}
+.choice{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1.5px solid var(--line);border-radius:14px;
+  background:var(--bg-2);cursor:pointer;font-weight:600;font-size:17px;color:var(--fg);text-align:left;font-family:var(--body);transition:border-color .15s,background .15s,transform .1s}
+.choice:hover{border-color:#555}
+.choice:active{transform:scale(.99)}
+.choice kbd{font:700 12px var(--body);width:24px;height:24px;display:grid;place-items:center;border:1px solid var(--line);border-radius:6px;color:var(--muted);flex:none}
+.choice[aria-pressed=true]{border-color:var(--accent);background:var(--pressed)}
+.choice[aria-pressed=true] kbd{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.check{display:flex;gap:12px;align-items:flex-start;margin-top:22px;font-size:15px;color:var(--muted);cursor:pointer}
+.check input{width:20px;height:20px;accent-color:var(--accent);margin-top:2px;flex:none}
+.err{color:var(--error);font-size:14px;margin:14px 0 0;min-height:1.4em}
+.actions{display:flex;align-items:center;gap:14px;margin-top:28px;flex-wrap:wrap}
+.btn{appearance:none;border:0;border-radius:999px;padding:15px 28px;font:700 16px var(--body);cursor:pointer;
+  background:var(--accent);color:var(--accent-ink);display:inline-flex;align-items:center;gap:10px;transition:transform .1s,filter .15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.6;cursor:wait}
+.ghost{background:none;border:0;color:var(--muted);font:600 15px var(--body);cursor:pointer;padding:10px 4px}
+.ghost:hover{color:var(--fg)}
+.enter{font-size:13px;color:var(--muted)}
+.enter b{color:var(--fg)}
+@media (hover:none){.enter{display:none}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.perks{display:grid;gap:10px;margin:0 0 32px;padding:0;list-style:none}
+.perks li{display:flex;gap:12px;align-items:baseline;color:var(--fg)}
+.perks li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;transform:translateY(-2px)}
+.meta{color:var(--muted);font-size:14px}
+footer{max-width:640px;width:100%;margin:0 auto;padding-block:16px 24px;color:var(--faint);font-size:12px}
+.review{display:grid;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.review div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:12px;padding:12px 16px;border-top:1px solid var(--line);font-size:14px}
+.review div:first-child{border-top:0}
+.review dt{color:var(--muted)}
+.review dd{margin:0;word-break:break-word}
+.review button{all:unset;color:var(--accent);cursor:pointer;font-size:13px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="mark-bg" aria-hidden="true"></div>
+<div class="shell">
+  <header>
+    <div class="brand"><img src="logo.jpg" alt="">Scale<span>+</span> Agency</div>
+    <div class="count" id="count"></div>
+  </header>
+  <div class="rail" aria-hidden="true"><i id="bar"></i></div>
+  <main><form id="form" novalidate autocomplete="on" style="width:100%"></form></main>
+  <footer>Your answers are private and only seen by the Scale+ team. You must be 18 or older to apply.</footer>
+</div>
+
+<script>
+/* ---- Google Form backend: answers land in the existing Scale+ Google Form ---- */
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc6bJCxsBbEnAIXRuDs8QTVk2Basq4A95A1kqv0YbnRtlsnYw/formResponse";
+const ENTRY = {
+  name:"entry.241745866", socials:"entry.1797762964", tiktoks:"entry.1884275040",
+  income:"entry.1104197530", location:"entry.1759413580", nudity:"entry.373275865",
+  phone:"entry.250680806", languages:"entry.134616433", extra:"entry.1090339285"
+};
+
+const data = {};
+const steps = [
+  { id:"welcome", render:()=>`
+      <p class="eyebrow">Creator application</p>
+      <h1>Let's grow your page together.</h1>
+      <p class="hint">Tell us a bit about you. It takes about 2 minutes, and we reply to every application within 48 hours.</p>
+      <ul class="perks">
+        <li>Done-for-you management, chatting and growth</li>
+        <li>Strategy built for the US market</li>
+        <li>You keep full control of your content</li>
+      </ul>
+      <div class="actions"><button class="btn" type="submit">Start application →</button><span class="meta">9 short questions</span></div>` },
+
+  { id:"name", q:true, render:()=>`
+      <h2>First, what's your name?</h2>
+      <p class="hint">Your full name, as you'd like us to call you.</p>
+      <div class="fields">
+        <label class="f">First name<input type="text" id="first" autocomplete="given-name" placeholder="Jessica" value="${esc(data.first)}"></label>
+        <label class="f">Last name<input type="text" id="last" autocomplete="family-name" placeholder="Miller" value="${esc(data.last)}"></label>
+      </div>`,
+    save:()=>{ data.first=val("first"); data.last=val("last");
+      if(!data.first||!data.last) return "Please enter your first and last name."; } },
+
+  { id:"socials", q:true, render:()=>`
+      <h2>Nice to meet you, ${esc(data.first)}. Where can we find you?</h2>
+      <p class="hint">Your usernames, so we can look at your page before we talk.</p>
+      <div class="fields">
+        <label class="f">Instagram<div class="prefix"><b>@</b><input type="text" id="ig" autocapitalize="off" autocomplete="off" placeholder="yourname" value="${esc(data.ig)}"></div></label>
+        <label class="f">TikTok<div class="prefix"><b>@</b><input type="text" id="tt" autocapitalize="off" autocomplete="off" placeholder="yourname" value="${esc(data.tt)}"></div></label>
+      </div>`,
+    save:()=>{ data.ig=val("ig").replace(/^@/,""); data.tt=val("tt").replace(/^@/,"");
+      if(!data.ig&&!data.tt) return "Add at least one username."; } },
+
+  { id:"tiktoks", q:true, choice:["Yes","No"], key:"tiktoks", render:()=>`
+      <h2>Are you willing to post several TikToks a day?</h2>
+      <p class="hint">Consistency is how we grow your audience fast.</p>
+      ${choices("tiktoks",["Yes","No"],true)}` },
+
+  { id:"income", q:true, key:"income", render:()=>`
+      <h2>How much are you making per month right now?</h2>
+      <p class="hint">From your content, all platforms combined. Starting from zero is totally fine.</p>
+      ${choices("income",["Just starting ($0)","Under $1,000","$1,000 – $5,000","$5,000 – $10,000","$10,000+"])}` },
+
+  { id:"location", q:true, render:()=>`
+      <h2>Where are you based?</h2>
+      <p class="hint">City and country.</p>
+      <div class="fields"><input type="text" id="loc" autocomplete="address-level2" placeholder="Miami, USA" value="${esc(data.location)}" aria-label="City and country"></div>`,
+    save:()=>{ data.location=val("loc"); if(!data.location) return "Tell us where you're based."; } },
+
+  { id:"nudity", q:true, key:"nudity", render:()=>`
+      <h2>Are you comfortable creating content that involves nudity?</h2>
+      <p class="hint">There's no wrong answer. It just helps us pick the right strategy for you.</p>
+      ${choices("nudity",["Yes","No"],true)}
+      <label class="check"><input type="checkbox" id="adult" ${data.adult?"checked":""}> I confirm I am 18 years old or older.</label>`,
+    save:()=>{ data.adult=document.getElementById("adult").checked;
+      if(!data.nudity) return "Please pick an answer.";
+      if(!data.adult) return "You must be 18 or older to apply."; } },
+
+  { id:"phone", q:true, render:()=>`
+      <h2>What's your phone number?</h2>
+      <p class="hint">With country code. We'll text you on WhatsApp or iMessage, never spam.</p>
+      <div class="fields"><input type="tel" id="phone" autocomplete="tel" inputmode="tel" placeholder="+1 305 555 0123" value="${esc(data.phone)}" aria-label="Phone number"></div>`,
+    save:()=>{ data.phone=val("phone");
+      if(data.phone.replace(/\D/g,"").length<7) return "Please enter a valid phone number, with country code."; } },
+
+  { id:"languages", q:true, render:()=>`
+      <h2>Which languages do you speak?</h2>
+      <p class="hint">List them all, for example: English, Spanish.</p>
+      <div class="fields"><input type="text" id="lang" placeholder="English, Spanish" value="${esc(data.languages)}" aria-label="Languages"></div>`,
+    save:()=>{ data.languages=val("lang"); if(!data.languages) return "Tell us at least one language."; } },
+
+  { id:"extra", q:true, render:()=>`
+      <h2>Anything else you'd like us to know?</h2>
+      <p class="hint">Your niche, your goals, what you love creating. Optional.</p>
+      <textarea id="extra" placeholder="I post fitness and lifestyle content, and I want to...">${esc(data.extra)}</textarea>`,
+    save:()=>{ data.extra=val("extra"); } },
+
+  { id:"review", render:()=>`
+      <p class="eyebrow">Almost done</p>
+      <h2>Check your answers</h2>
+      <p class="hint">Tap edit to change anything.</p>
+      <dl class="review">
+        ${row("Name",data.first+" "+data.last,1)}
+        ${row("Instagram / TikTok",socials(),2)}
+        ${row("Several TikToks a day",data.tiktoks,3)}
+        ${row("Monthly earnings",data.income,4)}
+        ${row("Based in",data.location,5)}
+        ${row("Comfortable with nudity",data.nudity,6)}
+        ${row("Phone",data.phone,7)}
+        ${row("Languages",data.languages,8)}
+        ${row("About you",data.extra||"—",9)}
+      </dl>`,
+    submitLabel:"Send my application" },
+
+  { id:"done", render:()=>`
+      <p class="eyebrow">Application received</p>
+      <h1>Thank you, ${esc(data.first)}.</h1>
+      <p class="hint">Our team will review your profile and reach out within 48 hours on Instagram or by text. Keep an eye on your DMs.</p>` }
+];
+
+const QUESTIONS = steps.filter(s=>s.q).length;
+let i = 0, dir = 1;
+const form = document.getElementById("form");
+
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function val(id){return document.getElementById(id).value.trim()}
+function socials(){return [data.ig&&"IG @"+data.ig,data.tt&&"TikTok @"+data.tt].filter(Boolean).join(" · ")}
+function row(k,v,step){return `<div><dt>${k}</dt><dd>${esc(v)} <button type="button" data-goto="${step}">Edit</button></dd></div>`}
+function choices(key,opts,two){
+  return `<div class="choices${two?" two":""}" role="group">${opts.map((o,n)=>
+    `<button type="button" class="choice" data-key="${key}" data-val="${esc(o)}" aria-pressed="${data[key]===o}"><kbd>${String.fromCharCode(65+n)}</kbd>${esc(o)}</button>`).join("")}</div>`;
+}
+
+function render(){
+  const s = steps[i];
+  const qIndex = steps.slice(0,i+1).filter(x=>x.q).length;
+  document.getElementById("count").textContent = s.q ? `${qIndex} / ${QUESTIONS}` : "";
+  document.getElementById("bar").style.width = (s.id==="done"||s.id==="review" ? 100 : (qIndex-(s.q?1:0))/QUESTIONS*100) + "%";
+  const isLast = s.id==="done", isFirst = i===0;
+  form.innerHTML = `<div class="step${dir<0?" back":""}">${s.render()}
+    <p class="err" id="err" role="alert"></p>
+    ${isLast||isFirst ? "" : `<div class="actions">
+      <button class="btn" type="submit" id="next">${s.submitLabel||"Next →"}</button>
+      <button class="ghost" type="button" id="back">← Back</button>
+      <span class="enter">press <b>Enter ↵</b></span></div>`}
+  </div>`;
+  if(isFirst) form.querySelector(".err").remove();
+  const first = form.querySelector("input:not([type=checkbox]),textarea");
+  if(first && matchMedia("(hover:hover)").matches) first.focus();
+  try{ localStorage.setItem("scaleplus-apply", JSON.stringify({i,data})) }catch(e){}
+}
+
+async function next(){
+  const s = steps[i];
+  const err = s.save ? s.save() : (s.key && !data[s.key] ? "Please pick an answer." : null);
+  if(err){ document.getElementById("err").textContent = err; return; }
+  if(s.id==="review"){ return submit(); }
+  dir = 1; i++; render();
+}
+
+async function submit(){
+  const btn = document.getElementById("next");
+  btn.disabled = true; btn.textContent = "Sending…";
+  const body = new URLSearchParams({
+    [ENTRY.name]: `${data.first} ${data.last}`,
+    [ENTRY.socials]: socials(),
+    [ENTRY.tiktoks]: data.tiktoks,
+    [ENTRY.income]: data.income,
+    [ENTRY.location]: data.location,
+    [ENTRY.nudity]: data.nudity,
+    [ENTRY.phone]: data.phone,
+    [ENTRY.languages]: data.languages,
+    [ENTRY.extra]: data.extra || ""
+  });
+  try{
+    await fetch(FORM_URL, {method:"POST", mode:"no-cors", body});
+    try{ localStorage.removeItem("scaleplus-apply") }catch(e){}
+    dir = 1; i = steps.length-1; render();
+  }catch(e){
+    btn.disabled = false; btn.textContent = "Send my application";
+    document.getElementById("err").textContent = "We couldn't send your application. Check your connection and try again.";
+  }
+}
+
+form.addEventListener("submit", e=>{ e.preventDefault(); if(i===0){dir=1;i=1;render()} else next(); });
+form.addEventListener("click", e=>{
+  const c = e.target.closest(".choice");
+  if(c){ data[c.dataset.key]=c.dataset.val;
+    form.querySelectorAll(`.choice[data-key="${c.dataset.key}"]`).forEach(b=>b.setAttribute("aria-pressed", b===c));
+    const s = steps[i];
+    if(!s.save) setTimeout(next, 220); // auto-advance on single-choice steps
+    return; }
+  if(e.target.id==="back"){ dir=-1; i=Math.max(0,i-1); render(); }
+  const g = e.target.dataset.goto; if(g){ dir=-1; i=+g; render(); }
+});
+document.addEventListener("keydown", e=>{
+  if(e.target.tagName==="TEXTAREA"||e.target.tagName==="INPUT") return;
+  const opts = form.querySelectorAll(".choice"); const n = e.key.toUpperCase().charCodeAt(0)-65;
+  if(e.key.length===1 && opts[n]) opts[n].click();
+});
+
+try{ const saved = JSON.parse(localStorage.getItem("scaleplus-apply")); if(saved && saved.i < steps.length-1){ Object.assign(data, saved.data); i = saved.i; } }catch(e){}
+render();
+</script>
+</body>
+</html>
